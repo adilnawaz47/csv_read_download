@@ -1,0 +1,147 @@
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper container-xxl p-0">
+        <div class="content-header row">
+            <div class="content-header-left col-md-9 col-12 mb-2">
+                <div class="row breadcrumbs-top">
+                    <div class="col-12">
+                        <h2 class="content-header-title float-start mb-0">Profile</h2>
+                        <div class="breadcrumb-wrapper">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">Plan</a>
+                                </li>
+                                <li class="breadcrumb-item active">Upload plan
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <!-- Basic Horizontal form layout section start -->
+            <section id="basic-horizontal-layouts">
+                <div class="row" style="justify-content: center;">
+                    <div class="col-md-5 col-6">
+                        <div class="card">
+                            <div class="card-header mt-2">
+                                
+                                <h4 class="card-title">Upload File</h4>
+                               
+                                
+                            </div>
+                            <div class="card-body">
+                            <p class="card-text">
+                                <!--messages-->
+                                {% if messages %}
+                                <!-- <ul class="alert-warning"> -->
+                                {% for message in messages %}
+                            <span class="alert alert-{{message.tags}}">
+                                {% if message.tags %} {% endif %}{{ message }}
+                            </span>
+                            {% endfor %}
+                            <!-- </ul> -->
+                            {% endif %}
+                            <!--messages-->
+                            </p>
+                                <form class="row gy-1 pt-75" name="frm" method="post" action="#" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                               
+                                <div class="row mt-2">
+                                    <div class="col-9 col-md-12" >
+                                        <label class="form-label" for="name">Upload File</label>
+                                        <input type="file"  name="file" id="file" onchange="checkfile(this);"   class="form-control" required/>
+                                        
+                                    </div>
+                                    <p id="msg"></p>
+                                </div>
+                                
+                              
+                                
+
+                                    <div class="col-12 text-center mt-2 pt-50">
+                                        <button  type="submit" id="upload-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="upload file" class="btn btn-primary me-1" >
+                                            <i data-feather='upload'></i> Upload</button>
+
+                                       <button id="download" type="button" target="_blank"  class="btn btn-success btn-download-now download">
+                                            <span>&nbsp;Sample File <i data-feather='download'></i></span>
+                                            </button> 
+                                    </div>
+                                    
+                                        
+                                  
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Basic Horizontal form layout section end -->
+        </div>
+    </div>
+</div>
+
+{% endblock epccontent %}
+{% block epcscript %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.tutorialjinni.com/jquery-csv/1.0.11/jquery.csv.min.js"></script>
+<script>
+
+    $("#download").click(function() {
+        None = ""
+        var all_data= {{sample_csv_data|safe}};
+
+        //const data = [
+         //   { name: "Item 1", color: "Green", size: "X-Large" },
+        //    { name: "Item 2", color: "Green", size: "X-Large" },
+         //  { name: "Item 3", color: "Green", size: "X-Large" }
+        //];
+        // Convert to csv
+        const csv = $.csv.fromObjects(all_data);
+        // Download file as csv function
+        const downloadBlobAsFile = function(csv, filename){
+            var downloadLink = document.createElement("a");
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            downloadLink.href = url;
+            downloadLink.download = filename;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+        // Download csv file
+        downloadBlobAsFile(csv, 'sample.csv');
+    });
+</script> 
+
+
+
+<script type="text/javascript" language="javascript">
+    function checkfile(sender) {
+        var validExts = new Array(".csv");
+        var fileExt = sender.value;
+        fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+        if (validExts.indexOf(fileExt) < 0) {
+            document.getElementById("upload-btn").disabled = true;
+            //alert("Invalid file selected, valid files are of " +
+            //     validExts.toString() + " types.");
+            document.getElementById('file').style.borderColor = "red"
+            document.getElementById('msg').style.color = "red"
+            $('#msg').html('You can upload csv file only..')
+          return false;
+        }
+        else{
+            document.getElementById("upload-btn").disabled = false; 
+            document.getElementById('file').style.borderColor = "green"
+            document.getElementById('msg').style.color = "green"
+            $('#msg').html('You can upload here..')
+            return True;
+        }
+    }
+    </script>
+
+    
+    
+{% endblock epcscript %}
